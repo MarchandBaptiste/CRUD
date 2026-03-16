@@ -22,7 +22,7 @@ $students = getStudent($db);
                     <td><?= htmlspecialchars($student['first_name']) ?></td>
                     <td><?= htmlspecialchars($student['email']) ?></td>
                     <td><?= htmlspecialchars($student['created_at']) ?></td>
-                    <td><a href="<?= BASE_URL ?>source/pages/delete_student.php?id=<?= $student['id'] ?>">Supprimé</a></td>
+                    <td><a href="<?= BASE_URL ?>source/pages/delete_student.php?id=<?= $student['id'] ?>" class="btn">Supprimé</a></td>
                 </tr>
             <?php endforeach ?>
         </tbody>

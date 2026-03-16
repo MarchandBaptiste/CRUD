@@ -1,13 +1,16 @@
 <?php 
-function getMoviesActors($db, $id){
-    $id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
-    $sql = "SELECT * FROM `actor` 
-    JOIN `film_actor` ON `actor`.`actor_id`=`film_actor`.`actor_id`
-    JOIN `film` ON `film`.`film_id`=`film_actor`.`film_id`
-    WHERE `actor`.`actor_id`=:id;";
+function setStudent($db, $first_name, $last_name, $email){
+    $sql = "INSERT INTO `students` (`first_name`,`last_name`,`email`)
+    VALUES (:first_name, :last_name, :email)";
     $stmt = $db->prepare($sql);
-    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt->bindValue(':first_name', $first_name, PDO::PARAM_STR);
+    $stmt->bindValue(':last_name', $last_name, PDO::PARAM_STR);
+    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if ($stmt->rowCount() > 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 ?>
