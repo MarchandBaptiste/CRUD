@@ -1,20 +1,19 @@
 <?php
 include_once('../partials/header.php');
-include_once __DIR__ . '/../functions/getCate.php';
+include_once __DIR__ . '/../functions/deletStudent.php';
+$studentId = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 $db = db();
-$categories = getCate($db);
+$delet = deletStudent($db, $studentId);
+if ($delet === true) {
+    $sentance = 'La supréssion a réussi';
+}
+else {
+    $sentance = 'La supréssion a échoué';
+}
 ?>
 <h2>Suprimé un étudiant</h2>
 <section class="cate-column">
-    <h3 class="sous-titre">Nombre de films par catégorie</h3>
-    <article class="cate-data">
-        <?php foreach ($categories as $categorie) : ?>
-            <div>
-                <h4><?php echo htmlspecialchars($categorie['name']) ?></h4>
-                <p class="text-blue"><?= htmlspecialchars($categorie['Nombre de film par catégory']) ?></p>
-            </div>
-            <?php endforeach ?>
-        </article>
+    <p><?= $sentance ?></p>
 </section>
 
 <?php include_once('../partials/footer.php');

@@ -35,11 +35,6 @@ require_once __DIR__ . '/../database/db_connect.php';
         <li><a href="<?= BASE_URL ?>source/pages/delete_student.php">Supprimer</a></li>
         <li><a href="<?= BASE_URL ?>source/pages/search.php">Recherche</a></li>
         <li><a href="<?= BASE_URL ?>source/pages/edit_student.php">Modifier</a></li>
-        <li>
-          <a href="<?= BASE_URL ?>source/pages/connexion.php?logout" class="<?= isset($_SESSION['logged']) ? 'active' : '' ?>">
-            <?= isset($_SESSION['logged']) ? 'Déconnexion' : 'Connexion' ?>
-          </a>
-        </li>
         </label>
       </ul>
     </nav>
