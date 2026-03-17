@@ -2,8 +2,12 @@
 include_once('../partials/header.php');
 include_once __DIR__ . '/../functions/modifyStudent.php';
 $studentId = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+if ($studentId === null) {
+    header("Location: ../pages/home.php");
+    exit;
+}
 $db = db();
-
+$studentData = studentSet($db, $studentId);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first_name = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_SPECIAL_CHARS);
     $last_name = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -24,17 +28,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // (bool) force a renvoyer un boolean
     $email_valid = (bool) filter_var($email, FILTER_VALIDATE_EMAIL);
 
-    if (!$first_name_valid || !$last_name_valid || !$email_valid) {
+    if (!$first_name_valid || !$last_name_valid || !$email_valid || $studentId === null) {
         $sentance = 'Données manquantes ou invalides';
         $modify = false;
     } else {
         $user = modifyStudent($db, $studentId, $first_name, $last_name, $email);
         if ($user === true) {
             $modify   = true;
+            $sentance = 'Modification effectuer avec sucess';
+        } else {
+            $modify   = false;
             $sentance = "Les modifications on échouées";
-            } else {
-                $modify   = false;
-                $sentance = 'Modification effectuer avec sucess';
         }
     }
 }
@@ -51,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         id="first_name"
                         name="first_name"
                         placeholder="Entrez votre prénom"
-                        value="<?= isset($_POST['signIn']) ? htmlspecialchars($first_name ?? '') : '' ?>"
+                        value="<?= $studentData['first_name'] ?? '' ?>"
                         required />
                 </div>
                 <div>
@@ -61,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         id="last_name"
                         name="last_name"
                         placeholder="Entrez votre nom"
-                        value="<?= isset($_POST['signIn']) ? htmlspecialchars($last_name ?? '') : '' ?>"
+                        value="<?= $studentData['last_name'] ?? '' ?>"
                         required>
                 </div>
                 <div>
@@ -71,13 +75,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         id="email"
                         name="email"
                         placeholder="Entrez votre email"
-                        value="<?= isset($_POST['signIn']) ? htmlspecialchars($email ?? '') : '' ?>"
+                        value="<?= $studentData['email'] ?? '' ?>"
                         required />
                 </div>
                 <button type="submit" name="modify">Modifier</button>
                 <p><?= $sentance ?? '' ?></p>
-                </div>
-            </form>
+            </div>
+        </form>
     </section>
 </div>
 <?php include_once('../partials/footer.php');

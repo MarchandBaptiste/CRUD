@@ -9,7 +9,7 @@ function studentSet($db, $studentId)
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':id', $studentId, PDO::PARAM_INT);
     $stmt->execute();
-    return $stmt;
+    return $stmt->fetch(PDO::FETCH_ASSOC);;
 }
 function modifyStudent($db, $studentId, $first_name, $last_name, $email)
 {
@@ -22,5 +22,5 @@ function modifyStudent($db, $studentId, $first_name, $last_name, $email)
     $stmt->bindValue(':last_name', $last_name, PDO::PARAM_STR);
     $stmt->bindValue(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
-    return $stmt;
+    return $stmt->rowCount();
 }

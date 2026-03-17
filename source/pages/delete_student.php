@@ -2,6 +2,10 @@
 include_once('../partials/header.php');
 include_once __DIR__ . '/../functions/deletStudent.php';
 $studentId = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+if ($studentId === null) {
+    header("Location: ../pages/home.php");
+    exit;
+}
 $db = db();
 $delet = deletStudent($db, $studentId);
 if ($delet === true) {
