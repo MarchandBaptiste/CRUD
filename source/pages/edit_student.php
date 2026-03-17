@@ -1,32 +1,84 @@
 <?php
 include_once('../partials/header.php');
-include_once __DIR__ . '/../functions/getMoviesActors.php';
-$actorId = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+include_once __DIR__ . '/../functions/modifyStudent.php';
+$studentId = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 $db = db();
-$movies = getMoviesActors($db, $actorId);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $first_name = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_SPECIAL_CHARS);
+    $last_name = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_SPECIAL_CHARS);
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    // validation des champs
+    $first_name_valid = (
+        !empty(trim($first_name)) &&
+        strlen($first_name) >= 2 &&
+        strlen($first_name) <= 50 &&
+        preg_match('/^[a-zA-ZÀ-ÿ\s\-]+$/', $first_name)
+    );
+    $last_name_valid = (
+        !empty(trim($last_name)) &&
+        strlen($last_name) >= 2 &&
+        strlen($last_name) <= 50 &&
+        preg_match('/^[a-zA-ZÀ-ÿ\s\-]+$/', $last_name)
+    );
+    // (bool) force a renvoyer un boolean
+    $email_valid = (bool) filter_var($email, FILTER_VALIDATE_EMAIL);
+
+    if (!$first_name_valid || !$last_name_valid || !$email_valid) {
+        $sentance = 'Données manquantes ou invalides';
+        $modify = false;
+    } else {
+        $user = modifyStudent($db, $studentId, $first_name, $last_name, $email);
+        if ($user === true) {
+            $modify   = true;
+            $sentance = "Les modifications on échouées";
+            } else {
+                $modify   = false;
+                $sentance = 'Modification effectuer avec sucess';
+        }
+    }
+}
 ?>
 <h2>Modifier un étudiant</h2>
-<section class="filmographie">
-    <?php if (empty($movies)) { ?>
-        <p>Acteur introuvable.</p>
-    <?php } else { ?>
-        <div class="sous-titre">
-            <h3><?= htmlspecialchars($movies[0]['first_name'] . ' ' . $movies[0]['last_name']) ?></h3>
-            <p class="mutedText">ID acteur : #<?= htmlspecialchars($movies[0]['actor_id']) ?></p>
-        </div>
-    <?php } ?>
-    <div class="card-conteneur">
-        <?php foreach ($movies as $movie) : ?>
-            <div class="card">
-                <h4><?php echo htmlspecialchars($movie['title']) ?></h4>
-                <p class="mutedText"><?= htmlspecialchars($movie['description']) ?></p>
-                <div><span>📆 </span> <?= htmlspecialchars($movie['release_year']) ?>
-                    <span>🕐 </span> <?= htmlspecialchars($movie['length']) ?>
-                    <span>📈 </span> <?= htmlspecialchars($movie['rating']) ?>
+<div class="divLog">
+    <section class="log">
+        <form action="" method="POST">
+            <div class="form">
+                <div>
+                    <label for="first_name">Prénom : </label>
+                    <input
+                        type="text"
+                        id="first_name"
+                        name="first_name"
+                        placeholder="Entrez votre prénom"
+                        value="<?= isset($_POST['signIn']) ? htmlspecialchars($first_name ?? '') : '' ?>"
+                        required />
                 </div>
-            </div>
-        <?php endforeach ?>
-    </div>
-</section>
+                <div>
+                    <label for="last_name">Nom : </label>
+                    <input
+                        type="text"
+                        id="last_name"
+                        name="last_name"
+                        placeholder="Entrez votre nom"
+                        value="<?= isset($_POST['signIn']) ? htmlspecialchars($last_name ?? '') : '' ?>"
+                        required>
+                </div>
+                <div>
+                    <label for="email">Email : </label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Entrez votre email"
+                        value="<?= isset($_POST['signIn']) ? htmlspecialchars($email ?? '') : '' ?>"
+                        required />
+                </div>
+                <button type="submit" name="modify">Modifier</button>
+                <p><?= $sentance ?? '' ?></p>
+                </div>
+            </form>
+    </section>
+</div>
 <?php include_once('../partials/footer.php');
 ?>

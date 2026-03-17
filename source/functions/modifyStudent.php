@@ -1,21 +1,26 @@
 <?php
-function getMagasin($db)
+function studentSet($db, $studentId)
 {
     $sql = "SELECT 
-    staff.first_name, 
-    staff.last_name, 
-    staff.email,
-    address.address, 
-    address.postal_code,
-    city.city
-    FROM `store` 
-    JOIN `staff` 
-    ON `staff`.`staff_id`=`store`.`manager_staff_id` 
-    JOIN `address` 
-    ON `address`.`address_id`=`store`.`address_id` 
-    JOIN `city` 
-    ON `city`.`city_id`=`address`.`city_id`; ";
+    *
+    FROM `students` 
+    WHERE id = :id
+    ";
     $stmt = $db->prepare($sql);
+    $stmt->bindValue(':id', $studentId, PDO::PARAM_INT);
     $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $stmt;
+}
+function modifyStudent($db, $studentId, $first_name, $last_name, $email)
+{
+    $sql = "UPDATE `students`
+    SET `first_name` = :first_name, `last_name` = :last_name, `email` = :email
+    WHERE `id` = :studentId";
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':studentId', $studentId, PDO::PARAM_INT);
+    $stmt->bindValue(':first_name', $first_name, PDO::PARAM_STR);
+    $stmt->bindValue(':last_name', $last_name, PDO::PARAM_STR);
+    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+    $stmt->execute();
+    return $stmt;
 }

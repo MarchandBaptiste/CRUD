@@ -12,7 +12,8 @@ $students = getStudent($db);
                 <th scope="col">Prénom</th>
                 <th scope="col">Email</th>
                 <th scope="col">Date de création</th>
-                <th>Delete</th>
+                <th>Supprimé</th>
+                <th>Modifier</th>
             </tr>
         </thead>
         <tbody>
@@ -23,6 +24,7 @@ $students = getStudent($db);
                     <td><?= htmlspecialchars($student['email']) ?></td>
                     <td><?= htmlspecialchars($student['created_at']) ?></td>
                     <td><a href="<?= BASE_URL ?>source/pages/delete_student.php?id=<?= $student['id'] ?>" class="btn">Supprimé</a></td>
+                    <td><a href="<?= BASE_URL ?>source/pages/edit_student.php?id=<?= $student['id'] ?>" class="btn">Modifier</a></td>
                 </tr>
             <?php endforeach ?>
         </tbody>
